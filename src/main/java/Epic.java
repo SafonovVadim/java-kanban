@@ -7,14 +7,16 @@ public class Epic extends Task {
         super(title, description, status);
     }
 
-    public void addSubtaskId(int subtaskId) {
-        subtaskIds.add(subtaskId);
+    public void addSubtaskId(Task subtask) {
+        if (subtask instanceof SubTask) {
+            subtaskIds.add(subtask.getId());
+        }
     }
 
 
     @Override
     public String toString() {
-        return "Epic{"+
+        return "Epic{" +
                 " subtasks.size = " + subtaskIds.size() +
                 ", subtasks.ids = " + subtaskIds +
                 ", title='" + this.getTitle() + '\'' +
