@@ -1,11 +1,22 @@
+package managers;
+
+import entities.Epic;
+import entities.Status;
+import entities.SubTask;
+import entities.Task;
+import interfaces.HistoryManager;
+import interfaces.TaskManager;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InMemoryTaskManager extends InMemoryHistoryManager implements TaskManager {
     private int nextId = 1;
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private final HashMap<Integer, SubTask> subtasks = new HashMap<>();
+    private final Map<Integer, Task> tasks = new HashMap<>();
+    private final Map<Integer, Epic> epics = new HashMap<>();
+    private final Map<Integer, SubTask> subtasks = new HashMap<>();
     private static final HistoryManager historyManager = Managers.getDefaultHistory();
 
     private int getNextId() {
@@ -13,7 +24,7 @@ public class InMemoryTaskManager extends InMemoryHistoryManager implements TaskM
     }
 
     @Override
-    public ArrayList<Task> getAllTasks() {
+    public List<Task> getAllTasks() {
         return new ArrayList<>(tasks.values());
     }
 
@@ -49,7 +60,7 @@ public class InMemoryTaskManager extends InMemoryHistoryManager implements TaskM
     }
 
     @Override
-    public ArrayList<Epic> getAllEpics() {
+    public List<Epic> getAllEpics() {
         return new ArrayList<>(epics.values());
     }
 
@@ -91,7 +102,7 @@ public class InMemoryTaskManager extends InMemoryHistoryManager implements TaskM
     }
 
     @Override
-    public ArrayList<SubTask> getAllSubtasks() {
+    public List<SubTask> getAllSubtasks() {
         return new ArrayList<>(subtasks.values());
     }
 
@@ -140,7 +151,7 @@ public class InMemoryTaskManager extends InMemoryHistoryManager implements TaskM
     }
 
     @Override
-    public ArrayList<SubTask> getSubtasksByEpicId(int epicId) {
+    public List<SubTask> getSubtasksByEpicId(int epicId) {
         ArrayList<SubTask> result = new ArrayList<>();
         for (SubTask subtask : getAllSubtasks()) {
             if (subtask.getEpicId() == epicId) {
@@ -151,8 +162,7 @@ public class InMemoryTaskManager extends InMemoryHistoryManager implements TaskM
         return result;
     }
 
-    @Override
-    public void updateStatus(Epic epic) {
+    private void updateStatus(Epic epic) {
 
         boolean allDone = true;
 

@@ -1,23 +1,25 @@
+package managers;
+
+import entities.Task;
+import interfaces.HistoryManager;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final ArrayList<Task> history = new ArrayList<>(10);
+    private final List<Task> history = new ArrayList<>(10);
 
     @Override
     public void add(Task task) {
         if (history.size() == 10) {
             history.remove(0);
             history.add(task);
-        } else history.add(task);
-
+        }
+        history.add(task);
     }
 
     @Override
-    public ArrayList<Task> getHistory() {
-        if (history.isEmpty()) {
-            return null;
-        } else {
-            return history;
-        }
+    public List<Task> getHistory() {
+        return history;
     }
 }
