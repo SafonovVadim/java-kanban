@@ -1,3 +1,10 @@
+import entities.Epic;
+import entities.Status;
+import entities.SubTask;
+import entities.Task;
+import interfaces.TaskManager;
+import managers.Managers;
+
 public class Main {
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();

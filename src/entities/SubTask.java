@@ -1,3 +1,5 @@
+package entities;
+
 public class SubTask extends Task {
     private final int epicId; //id вместо епика
 
