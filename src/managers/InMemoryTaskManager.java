@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class InMemoryTaskManager extends InMemoryHistoryManager implements TaskManager {
+public class InMemoryTaskManager implements TaskManager {
     private int nextId = 1;
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
@@ -155,7 +155,7 @@ public class InMemoryTaskManager extends InMemoryHistoryManager implements TaskM
         ArrayList<SubTask> result = new ArrayList<>();
         for (SubTask subtask : getAllSubtasks()) {
             if (subtask.getEpicId() == epicId) {
-                add(subtask);
+                historyManager.add(subtask);
                 result.add(subtask);
             }
         }
@@ -207,5 +207,10 @@ public class InMemoryTaskManager extends InMemoryHistoryManager implements TaskM
         for (Task task : getHistory()) {
             System.out.println(task);
         }
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 }
