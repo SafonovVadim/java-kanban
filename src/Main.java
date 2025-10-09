@@ -4,7 +4,6 @@ import entities.SubTask;
 import entities.Task;
 import interfaces.HistoryManager;
 import interfaces.TaskManager;
-import managers.InMemoryHistoryManager;
 import managers.Managers;
 
 public class Main {
