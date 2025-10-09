@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="4">
-  <component name="NewModuleRootManager">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_21">
     <output url="file://$MODULE_DIR$/out/production/java-kanban" />
     <output-test url="file://$MODULE_DIR$/out/test/java-kanban" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/src">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/test" isTestSource="true" />
+    </content>
+    <content url="file://$MODULE_DIR$/test">
+      <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
     </content>
     <orderEntry type="jdk" jdkName="temurin-11" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
