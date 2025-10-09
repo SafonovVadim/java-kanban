@@ -1,5 +1,3 @@
-package java;
-
 import entities.Epic;
 import entities.Status;
 import entities.SubTask;
