@@ -1,3 +1,5 @@
+package java;
+
 import entities.Epic;
 import entities.Status;
 import entities.SubTask;
@@ -18,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TaskManagerTest {
     static TaskManager manager = Managers.getDefault();
-    static Task task = new Task("New task", "test", Status.NEW);
+    static Task task = new Task("New task", "java", Status.NEW);
     static Epic epic = new Epic("Переезд", "Планируем переезд в новую квартиру", Status.NEW);
     static Epic epic1 = new Epic("Переезд1", "Планируем переезд в новую квартиру", Status.NEW);
 
