@@ -114,7 +114,7 @@ class TaskManagerTest {
         updatedTask.setId(1);
 
         historyManager.add(updatedTask);
-        Task taskFromHistory = historyManager.getHistory().get(0);
+        Task taskFromHistory = historyManager.getHistory().getFirst();
 
         assertNotNull(taskFromHistory);
         Assertions.assertEquals("Исходная задача", taskFromHistory.getTitle());
@@ -137,7 +137,7 @@ class TaskManagerTest {
 
         List<Task> history = manager.getHistory();
         assertEquals(1, history.size());
-        assertEquals(task2, history.get(0));
+        assertEquals(task2, history.getFirst());
     }
 
     @Test
@@ -149,15 +149,14 @@ class TaskManagerTest {
         Task task2 = new Task("Задача 2", "Описание");
         task2.setId(2);
 
-        manager.linkLast(task1);
-        manager.linkLast(task2);
+        manager.add(task1);
+        manager.add(task2);
 
-        InMemoryHistoryManager.Node node = manager.getHistoryMap().get(1);
-        manager.removeNode(node);
+        manager.remove(1);
 
         List<Task> history = manager.getHistory();
         assertEquals(1, history.size());
-        assertEquals(task2, history.get(0));
+        assertEquals(task2, history.getFirst());
     }
 
     @Test
@@ -169,8 +168,8 @@ class TaskManagerTest {
         Task task2 = new Task("Задача 2", "Описание");
         task2.setId(2);
 
-        manager.linkLast(task1);
-        manager.linkLast(task2);
+        manager.add(task1);
+        manager.add(task2);
 
         List<Task> history = manager.getTasks();
         assertEquals(2, history.size());
@@ -187,13 +186,13 @@ class TaskManagerTest {
         Task task2 = new Task("Задача 2", "Описание");
         task2.setId(2);
 
-        manager.linkLast(task1);
-        manager.linkLast(task2);
+        manager.add(task1);
+        manager.add(task2);
         manager.remove(1);
 
         List<Task> history = manager.getTasks();
         assertEquals(1, history.size());
-        assertEquals(task2, history.get(0));
+        assertEquals(task2, history.getFirst());
     }
 
     @Test
@@ -205,8 +204,8 @@ class TaskManagerTest {
         Task task2 = new Task("Задача 2", "Описание");
         task2.setId(2);
 
-        manager.linkLast(task1);
-        manager.linkLast(task2);
+        manager.add(task1);
+        manager.add(task2);
 
         List<Task> history = manager.getHistory();
         assertEquals(2, history.size());
@@ -243,58 +242,9 @@ class TaskManagerTest {
         original.setId(1);
         manager.createTask(original);
 
-
         original.setStatus(Status.DONE);
         Task fromManager = manager.getTaskById(1);
         assertNotEquals(Status.DONE, fromManager.getStatus());
     }
 
-    @Test
-    public void checkCorrectlyRemoveMiddleNode() {
-        InMemoryHistoryManager manager = new InMemoryHistoryManager();
-
-        Task task1 = new Task("Задача 1", "Описание");
-        task1.setId(1);
-        Task task2 = new Task("Задача 2", "Описание");
-        task2.setId(2);
-        Task task3 = new Task("Задача 3", "Описание");
-        task3.setId(3);
-
-        manager.linkLast(task1);
-        manager.linkLast(task2);
-        manager.linkLast(task3);
-
-        InMemoryHistoryManager.Node node2 = manager.getHistoryMap().get(2);
-        assertNotNull(node2);
-
-        manager.removeNode(node2);
-
-        List<Task> history = manager.getHistory();
-        assertEquals(2, history.size());
-        assertEquals(task1.getId(), history.get(0).getId());
-        assertEquals(task3.getId(), history.get(1).getId());
-
-        assertEquals(task1, manager.getHead().getNext().getTask());
-        assertEquals(task3, manager.getTail().getPrev().getTask());
-    }
-
-    @Test
-    public void checkNotRemoveHeadOrTail() {
-        InMemoryHistoryManager manager = new InMemoryHistoryManager();
-
-        Task task1 = new Task("Задача 1", "Описание");
-        task1.setId(1);
-        manager.linkLast(task1);
-
-        InMemoryHistoryManager.Node head = manager.getHead();
-        InMemoryHistoryManager.Node tail = manager.getTail();
-
-        manager.removeNode(head);
-        assertEquals(head, manager.getHead());
-        assertEquals(tail, manager.getTail());
-
-        manager.removeNode(tail);
-        assertEquals(head, manager.getHead());
-        assertEquals(tail, manager.getTail());
-    }
 }
