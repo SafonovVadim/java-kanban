@@ -10,16 +10,28 @@ import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private final Map<Integer, Node> historyMap = new HashMap<>();
-    private final Node head = new Node(null);
-    private final Node tail = new Node(null);
+    private final Node head = new Node(null) {
+        {
+            next = tail;
+        }
+    };
 
-    public InMemoryHistoryManager() {
-        head.next = tail;
-        tail.prev = head;
-    }
+    private final Node tail = new Node(null) {
+        {
+            prev = head;
+        }
+    };
 
     public Map<Integer, Node> getHistoryMap() {
         return historyMap;
+    }
+
+    public Node getHead() {
+        return head;
+    }
+
+    public Node getTail() {
+        return tail;
     }
 
     @Override
@@ -71,8 +83,14 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (node == null || node == head || node == tail) {
             return;
         }
-        node.prev.next = node.next;
-        node.next.prev = node.prev;
+
+        Node prevNode = node.prev;
+        Node nextNode = node.next;
+        prevNode.next = nextNode;
+        nextNode.prev = prevNode;
+        node.prev = null;
+        node.next = null;
+
         historyMap.remove(node.task.getId());
     }
 
@@ -83,6 +101,21 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         Node(Task task) {
             this.task = task;
+        }
+
+        Node() {
+        }
+
+        public Task getTask() {
+            return task;
+        }
+
+        public Node getPrev() {
+            return prev;
+        }
+
+        public Node getNext() {
+            return next;
         }
     }
 }

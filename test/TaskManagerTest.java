@@ -17,31 +17,28 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskManagerTest {
-    static TaskManager manager = Managers.getDefault();
     static Task task = new Task("New task", "java", Status.NEW);
     static Epic epic = new Epic("Переезд", "Планируем переезд в новую квартиру", Status.NEW);
     static Epic epic1 = new Epic("Переезд1", "Планируем переезд в новую квартиру", Status.NEW);
 
-
-    @BeforeAll
-    static void setUp() {
-        manager.createTask(task);
-        manager.createEpic(epic);
-        manager.createEpic(epic1);
-    }
-
     @Test
     void checkSameTasks() {
+        TaskManager manager = Managers.getDefault();
+        manager.createTask(task);
         Assertions.assertEquals(manager.getTaskById(1), task);
     }
 
     @Test
     void checkSameExtendsTasks() {
+        TaskManager manager = Managers.getDefault();
+        manager.createTask(task);
+        manager.createEpic(epic);
         Assertions.assertEquals(manager.getEpicById(2), epic);
     }
 
     @Test
     void checkEpicAddEpic() {
+        TaskManager manager = Managers.getDefault();
         epic1.addSubtaskId(epic);
         Assertions.assertEquals(Collections.emptyList(), manager.getSubtasksByEpicId(epic1.getId()));
     }
@@ -64,6 +61,9 @@ class TaskManagerTest {
 
     @Test
     void checkInMemoryTaskManagerAddTaskAndSearch() {
+        TaskManager manager = Managers.getDefault();
+        manager.createTask(task);
+        manager.createEpic(epic);
         SubTask subtask1 = new SubTask("Упаковать вещи", "Собрать коробки", Status.NEW, epic);
         manager.createSubtask(subtask1);
 
@@ -75,9 +75,9 @@ class TaskManagerTest {
         Assertions.assertEquals(epic, manager.getEpicById(2));
         assertInstanceOf(Epic.class, manager.getEpicById(2));
 
-        assertNotNull(manager.getSubtaskById(4));
-        Assertions.assertEquals(subtask1, manager.getSubtaskById(4));
-        assertInstanceOf(SubTask.class, manager.getSubtaskById(4));
+        assertNotNull(manager.getSubtaskById(3));
+        Assertions.assertEquals(subtask1, manager.getSubtaskById(3));
+        assertInstanceOf(SubTask.class, manager.getSubtaskById(3));
     }
 
     @Test
@@ -96,6 +96,7 @@ class TaskManagerTest {
 
     @Test
     void checkImmutableTaskAddManger() {
+        TaskManager manager = Managers.getDefault();
         manager.createTask(task);
         Assertions.assertEquals(task, manager.getTaskById(1));
     }
@@ -246,5 +247,54 @@ class TaskManagerTest {
         original.setStatus(Status.DONE);
         Task fromManager = manager.getTaskById(1);
         assertNotEquals(Status.DONE, fromManager.getStatus());
+    }
+
+    @Test
+    public void checkCorrectlyRemoveMiddleNode() {
+        InMemoryHistoryManager manager = new InMemoryHistoryManager();
+
+        Task task1 = new Task("Задача 1", "Описание");
+        task1.setId(1);
+        Task task2 = new Task("Задача 2", "Описание");
+        task2.setId(2);
+        Task task3 = new Task("Задача 3", "Описание");
+        task3.setId(3);
+
+        manager.linkLast(task1);
+        manager.linkLast(task2);
+        manager.linkLast(task3);
+
+        InMemoryHistoryManager.Node node2 = manager.getHistoryMap().get(2);
+        assertNotNull(node2);
+
+        manager.removeNode(node2);
+
+        List<Task> history = manager.getHistory();
+        assertEquals(2, history.size());
+        assertEquals(task1.getId(), history.get(0).getId());
+        assertEquals(task3.getId(), history.get(1).getId());
+
+        assertEquals(task1, manager.getHead().getNext().getTask());
+        assertEquals(task3, manager.getTail().getPrev().getTask());
+    }
+
+    @Test
+    public void checkNotRemoveHeadOrTail() {
+        InMemoryHistoryManager manager = new InMemoryHistoryManager();
+
+        Task task1 = new Task("Задача 1", "Описание");
+        task1.setId(1);
+        manager.linkLast(task1);
+
+        InMemoryHistoryManager.Node head = manager.getHead();
+        InMemoryHistoryManager.Node tail = manager.getTail();
+
+        manager.removeNode(head);
+        assertEquals(head, manager.getHead());
+        assertEquals(tail, manager.getTail());
+
+        manager.removeNode(tail);
+        assertEquals(head, manager.getHead());
+        assertEquals(tail, manager.getTail());
     }
 }
