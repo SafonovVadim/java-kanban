@@ -10,19 +10,13 @@ import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private final Map<Integer, Node> historyMap = new HashMap<>();
-    private final Node head = new Node(null) {
+    private final Node head = new Node(null);
+    private final Node tail = new Node(null);
 
-        {
-            next = tail;
-        }
-    };
-
-    private final Node tail = new Node(null) {
-
-        {
-            prev = head;
-        }
-    };
+    {
+        head.next = tail;
+        tail.prev = head;
+    }
 
     public Map<Integer, Node> getHistoryMap() {
         return historyMap;
@@ -103,9 +97,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         Node(Task task) {
             this.task = task;
-        }
-
-        Node() {
         }
 
         public Task getTask() {
