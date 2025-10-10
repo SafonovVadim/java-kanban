@@ -10,8 +10,13 @@ import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private final Map<Integer, Node> historyMap = new HashMap<>();
-    private final Node head = new Node(null) { { next = tail; } };
-    private final Node tail = new Node(null) { { prev = head; } };
+    private Node head;
+    private Node tail;
+
+    public InMemoryHistoryManager() {
+        this.head = new Node(null);
+        this.tail = new Node(null);
+    }
 
     public Map<Integer, Node> getHistoryMap() {
         return historyMap;
@@ -85,13 +90,15 @@ public class InMemoryHistoryManager implements HistoryManager {
         historyMap.remove(node.task.getId());
     }
 
-    public static class Node {
+    public class Node {
         Task task;
         Node prev;
         Node next;
 
         Node(Task task) {
             this.task = task;
+            this.next = tail;
+            this.prev = head;
         }
 
         public Task getTask() {
