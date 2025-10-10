@@ -67,7 +67,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     public void removeNode(Node node) {
-        if (node == null || node == head || node == tail) {
+        if (node == null) {
             return;
         }
 
