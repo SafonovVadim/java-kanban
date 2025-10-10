@@ -11,12 +11,14 @@ import java.util.Map;
 public class InMemoryHistoryManager implements HistoryManager {
     private final Map<Integer, Node> historyMap = new HashMap<>();
     private final Node head = new Node(null) {
+
         {
             next = tail;
         }
     };
 
     private final Node tail = new Node(null) {
+
         {
             prev = head;
         }
