@@ -2,6 +2,8 @@ package entities;
 
 import java.util.Objects;
 
+import static entities.Type.*;
+
 public class Task {
     private String title;
     private int id;
@@ -72,5 +74,14 @@ public class Task {
                 ", description=" + description +
                 ", status=" + status +
                 '}';
+    }
+
+    public String toString(Task task) {
+        return String.format("%d,%s,%s,%s,%s",
+                task.id,
+                TASK.name(),
+                task.title,
+                task.status,
+                task.description);
     }
 }
