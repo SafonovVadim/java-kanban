@@ -33,7 +33,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
 
-    public void save() {
+    private void save() {
         try (BufferedWriter writer = Files.newBufferedWriter(filePath.toPath())) {
             writer.write("id,type,name,status,description,epic");
             writer.newLine();

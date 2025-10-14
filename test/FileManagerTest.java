@@ -24,7 +24,6 @@ public class FileManagerTest {
     @Test
     void checkEmptyManager() {
         FileBackedTaskManager manager = new FileBackedTaskManager(tempFile);
-        manager.save();
 
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
 
@@ -42,7 +41,6 @@ public class FileManagerTest {
 
         manager.createTask(task1);
         manager.createTask(task2);
-        manager.save();
 
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
 
@@ -60,7 +58,6 @@ public class FileManagerTest {
 
         manager.createTask(task1);
         manager.createTask(task2);
-        manager.save();
 
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
 
