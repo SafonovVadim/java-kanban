@@ -2,12 +2,16 @@ import entities.Epic;
 import entities.Status;
 import entities.SubTask;
 import entities.Task;
+import exceptions.ManagerSaveException;
 import interfaces.HistoryManager;
 import interfaces.TaskManager;
+import managers.FileBackedTaskManager;
 import managers.Managers;
 
+import java.io.File;
+
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ManagerSaveException {
         //Основной сценарий
         TaskManager manager = Managers.getDefault();
 
@@ -94,5 +98,41 @@ public class Main {
         taskManager.deleteEpic(epic2.getId());
         System.out.println("\n=== История после удаления эпика 2 и его подзадач ===");
         taskManager.printAllTasks();
+
+        // Сценарий по сохранению в файл
+        File filePath = new File("tasks.csv");
+
+        FileBackedTaskManager managerFile = new FileBackedTaskManager(filePath);
+
+        Task task = new Task("Задача", "Описание", Status.NEW);
+        task.setId(1);
+        managerFile.createTask(task);
+
+        Epic epicFile = new Epic("Эпик", "Описание эпика", Status.NEW);
+        epicFile.setId(2);
+        managerFile.createEpic(epic);
+
+        SubTask subtask = new SubTask("Подзадача", "Описание подзадачи", Status.DONE, epicFile);
+        subtask.setId(3);
+        managerFile.createSubtask(subtask);
+
+        System.out.println("Данные сохранены в: " + filePath);
+
+        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(filePath);
+
+        System.out.println("\nЗагруженные задачи:");
+        for (Task t : loadedManager.getAllTasks()) {
+            System.out.println(t);
+        }
+
+        System.out.println("\nЗагруженные эпики:");
+        for (Epic e : loadedManager.getAllEpics()) {
+            System.out.println(e);
+        }
+
+        System.out.println("\nЗагруженные подзадачи:");
+        for (SubTask s : loadedManager.getAllSubtasks()) {
+            System.out.println(s);
+        }
     }
 }

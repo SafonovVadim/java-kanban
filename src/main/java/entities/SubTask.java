@@ -1,5 +1,7 @@
 package entities;
 
+import static entities.Type.SUBTASK;
+
 public class SubTask extends Task {
     private final int epicId; //id вместо епика
 
@@ -22,5 +24,9 @@ public class SubTask extends Task {
     @Override
     public String toString() {
         return "SubTask: " + super.toString();
+    }
+
+    public String toString(SubTask subTask) {
+        return String.format("%d,%s,%s,%s,%s,%d", subTask.getId(), SUBTASK.name(), subTask.getTitle(), subTask.getStatus(), subTask.getDescription(), epicId);
     }
 }
