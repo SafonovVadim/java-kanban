@@ -91,24 +91,25 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             String durationStr = parts[5];
             try {
                 duration = Long.parseLong(durationStr);
-            } catch (NumberFormatException _) {
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
         }
         LocalDateTime startTime = null;
+        LocalDateTime endTime = null;
         if (parts.length > 6 && parts[6] != null && !parts[6].trim().equals("null")) {
             try {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                 startTime = LocalDateTime.parse(parts[6]);
-            } catch (DateTimeParseException _) {
+            } catch (DateTimeParseException e) {
+                e.printStackTrace();
             }
         }
 
-        LocalDateTime endTime = null;
         if (parts.length > 7 && parts[7] != null && !parts[7].trim().equals("null")) {
             try {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                 startTime = LocalDateTime.parse(parts[7]);
-            } catch (DateTimeParseException _) {
+            } catch (DateTimeParseException e) {
+                e.printStackTrace();
             }
         }
         int epicId = Integer.parseInt(parts.length > 8 ? parts[8] : "0");
