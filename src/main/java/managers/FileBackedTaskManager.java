@@ -1,6 +1,5 @@
 package managers;
 
-
 import entities.*;
 import exceptions.ManagerSaveException;
 
@@ -9,6 +8,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -35,7 +38,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() {
         try (BufferedWriter writer = Files.newBufferedWriter(filePath.toPath())) {
-            writer.write("id,type,name,status,description,epic");
+            writer.write("id,type,name,status,description,epic,duration,startTime,endTime");
             writer.newLine();
             for (Task task : getAllTasks()) {
                 writer.write(task.toString(task));
@@ -83,14 +86,39 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String name = parts[2];
         Status status = Status.valueOf(parts[3]);
         String description = parts[4];
+        long duration = 0;
+        if (parts.length > 5 && !parts[5].isEmpty()) {
+            String durationStr = parts[5];
+            try {
+                duration = Long.parseLong(durationStr);
+            } catch (NumberFormatException _) {
+            }
+        }
+        LocalDateTime startTime = null;
+        if (parts.length > 6 && parts[6] != null && !parts[6].trim().equals("null")) {
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                startTime = LocalDateTime.parse(parts[6]);
+            } catch (DateTimeParseException _) {
+            }
+        }
+
+        LocalDateTime endTime = null;
+        if (parts.length > 7 && parts[7] != null && !parts[7].trim().equals("null")) {
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                startTime = LocalDateTime.parse(parts[7]);
+            } catch (DateTimeParseException _) {
+            }
+        }
+        int epicId = Integer.parseInt(parts.length > 8 ? parts[8] : "0");
         switch (type) {
             case TASK:
-                return new Task(id, name, description, status);
+                return new Task(id, name, description, status, Duration.ofMinutes(duration), startTime);
             case EPIC:
-                return new Epic(id, name, description, status);
+                return new Epic(id, name, description, status, Duration.ofMinutes(duration), startTime, endTime);
             case SUBTASK:
-                int epicId = Integer.parseInt(parts.length > 5 ? parts[5] : "0");
-                return new SubTask(id, name, description, status, epicId);
+                return new SubTask(id, name, description, status, Duration.ofMinutes(duration), startTime, epicId);
             default:
                 throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
         }

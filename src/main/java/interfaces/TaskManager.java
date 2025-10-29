@@ -5,6 +5,7 @@ import entities.SubTask;
 import entities.Task;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TaskManager {
 
@@ -12,7 +13,7 @@ public interface TaskManager {
 
     void deleteAllTasks();
 
-    Task getTaskById(int id);
+    Optional<Task> getTaskById(int id);
 
     void createTask(Task task);
 
@@ -24,7 +25,7 @@ public interface TaskManager {
 
     void deleteAllEpics();
 
-    Epic getEpicById(int id);
+    Optional<Epic> getEpicById(int id);
 
     void createEpic(Epic epic);
 
@@ -36,7 +37,7 @@ public interface TaskManager {
 
     void deleteAllSubtasks();
 
-    SubTask getSubtaskById(int id);
+    Optional<SubTask> getSubtaskById(int id);
 
     void createSubtask(SubTask subtask);
 
@@ -49,4 +50,8 @@ public interface TaskManager {
     void printAllTasks();
 
     List<Task> getHistory();
+
+    List<Task> getPrioritizedTasks();
+
+    boolean isOverlapping(Task task1, Task task2);
 }
