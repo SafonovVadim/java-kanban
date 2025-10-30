@@ -7,8 +7,6 @@ import static entities.Type.SUBTASK;
 
 public class SubTask extends Task {
     private final int epicId; //id вместо епика
-    private Duration duration;
-    private LocalDateTime startTime;
 
     public SubTask(String title, String description, Status status, Task epic) {
         super(title, description, status);

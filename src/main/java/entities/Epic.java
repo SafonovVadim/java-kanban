@@ -11,8 +11,6 @@ import static entities.Type.EPIC;
 public class Epic extends Task {
 
     private List<Integer> subtaskIds = new ArrayList<>();
-    private Duration duration;
-    private LocalDateTime startTime;
     private LocalDateTime endTime;
 
     public Epic(String title, String description, Status status) {
@@ -30,9 +28,9 @@ public class Epic extends Task {
         this.endTime = endTime;
     }
 
-    public Epic(int id, String title, String description, Status status, LocalDateTime startTime) {
+    public Epic(int id, String title, String description, Status status) {
         super(id, title, description, status);
-        this.startTime = startTime;
+
     }
 
     public List<Integer> getSubtaskIds() {
@@ -51,10 +49,6 @@ public class Epic extends Task {
 
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
     }
 
     @Override
@@ -79,14 +73,12 @@ public class Epic extends Task {
                 this.getStatus(),
                 this.getDescription(),
                 this.getDuration().toMinutes(),
-                this.startTime,
+                this.getStartTime(),
                 getEndTime());
     }
 
     public void updateFromSubtasks(List<SubTask> subtasks) {
         if (subtasks.isEmpty()) {
-            this.startTime = null;
-            this.duration = Duration.ZERO;
             this.endTime = null;
             return;
         }
@@ -107,8 +99,8 @@ public class Epic extends Task {
                 .map(SubTask::getDuration)
                 .reduce(Duration.ZERO, Duration::plus);
 
-        this.startTime = earliestStart;
-        this.duration = totalDuration;
+        this.setStartTime(earliestStart);
+        this.setDuration(totalDuration);
         this.endTime = latestEnd;
     }
 }

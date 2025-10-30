@@ -24,8 +24,6 @@ public class InMemoryTaskManager implements TaskManager {
                     Comparator.nullsLast(Comparator.naturalOrder())
             ).thenComparing(Task::getId)
     );
-    private final Map<LocalDateTime, Boolean> timeSlots = new HashMap<>();
-    private static final int INTERVAL_MINUTES = 15;
 
     private int getNextId() {
         return nextId++;
@@ -114,13 +112,8 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateEpic(Epic updatedEpic) {
         if (epics.containsKey(updatedEpic.getId())) {
-            if (hasIntersections(updatedEpic)) {
-                throw new ManagerSaveException("Нельзя обновить эпик — он пересекается с другой.");
-            }
             epics.put(updatedEpic.getId(), updatedEpic);
             updateStatus(updatedEpic);
-            prioritizedTasks.removeIf(t -> t.getId() == updatedEpic.getId());
-            prioritizedTasks.add(updatedEpic);
         }
     }
 
@@ -168,9 +161,10 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager.add(copy);
         prioritizedTasks.add(copy);
         updateEpicStatus(copy.getEpicId());
-        if (getEpicById(copy.getEpicId()).isPresent()) {
-            getEpicById(copy.getEpicId()).get().addSubtaskId(copy);
-            getEpicById(copy.getEpicId()).get().updateFromSubtasks(getSubtasksByEpicId(getEpicById(copy.getEpicId()).get().getId()));
+        Epic epic = getEpicById(copy.getEpicId()).isPresent() ? getEpicById(copy.getEpicId()).get() : null;
+        if (Objects.nonNull(epic)) {
+            epic.addSubtaskId(copy);
+            epic.updateFromSubtasks(getSubtasksByEpicId(epic.getId()));
         }
     }
 
@@ -292,8 +286,7 @@ public class InMemoryTaskManager implements TaskManager {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public boolean isOverlapping(Task task1, Task task2) {
+    private boolean isOverlapping(Task task1, Task task2) {
         if (task1 == null || task2 == null) return false;
 
         LocalDateTime start1 = task1.getStartTime();
@@ -310,7 +303,7 @@ public class InMemoryTaskManager implements TaskManager {
         return !(end1.isBefore(start2) || end2.isBefore(start1));
     }
 
-    public boolean hasIntersections(Task newTask) {
+    private boolean hasIntersections(Task newTask) {
         List<Task> sortedTasks = getPrioritizedTasks();
         return sortedTasks.stream()
                 .anyMatch(task -> !task.equals(newTask) && isOverlapping(newTask, task));

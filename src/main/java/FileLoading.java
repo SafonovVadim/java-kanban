@@ -33,7 +33,7 @@ public class FileLoading {
         Task task2 = new Task(4, "Задача", "Описание", Status.NEW, Duration.ofMinutes(10), LocalDateTime.now());
         managerFile.createTask(task2);
 
-        Epic epicFile1 = new Epic(5, "Эпик", "Описание эпика", Status.NEW, LocalDateTime.now().plus(1, ChronoUnit.HOURS));
+        Epic epicFile1 = new Epic(5, "Эпик", "Описание эпика", Status.NEW);
         managerFile.createEpic(epicFile1);
 
         SubTask subtask3 = new SubTask(6, "Подзадача", "Описание подзадачи", Status.DONE, Duration.ofMinutes(10), LocalDateTime.now().plus(2, ChronoUnit.HOURS), epicFile1.getId());
