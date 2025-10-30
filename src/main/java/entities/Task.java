@@ -1,15 +1,19 @@
 package entities;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-import static entities.Type.*;
+import static entities.Type.TASK;
 
 public class Task {
+
     private String title;
     private int id;
-
     private String description;
     private Status status;
+    private Duration duration;
+    private LocalDateTime startTime;
 
     public Task(String title, String description, Status status) {
         this.title = title;
@@ -28,6 +32,15 @@ public class Task {
         this.title = title;
         this.description = description;
         this.status = status;
+    }
+
+    public Task(int id, String title, String description, Status status, Duration duration, LocalDateTime startTime) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
     }
 
     public int getId() {
@@ -54,6 +67,22 @@ public class Task {
         this.status = status;
     }
 
+    public LocalDateTime getStartTime() {
+        return Objects.isNull(startTime) ? null : startTime;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public Duration getDuration() {
+        return duration != null ? duration : Duration.ZERO;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -73,15 +102,27 @@ public class Task {
                 " title=" + title +
                 ", description=" + description +
                 ", status=" + status +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
                 '}';
     }
 
     public String toString(Task task) {
-        return String.format("%d,%s,%s,%s,%s",
-                task.id,
+        return String.format("%d,%s,%s,%s,%s,%d,%s,%s",
+                this.id,
                 TASK.name(),
-                task.title,
-                task.status,
-                task.description);
+                this.title,
+                this.status,
+                this.description,
+                (this.duration != null) ? this.duration.toMinutes() : 0,
+                (this.startTime != null) ? this.startTime : null,
+                getEndTime());
+    }
+
+    public LocalDateTime getEndTime() {
+        if (this.startTime == null || this.duration.isZero()) {
+            return null;
+        }
+        return this.startTime.plus(this.duration);
     }
 }
