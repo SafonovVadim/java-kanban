@@ -156,7 +156,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void checkEdgeCaseTouching() {
+    void checkEdgeCaseTouching() throws Exception {
         Task task1 = new Task(1, "Задача 1", "Описание", Status.NEW);
         task1.setStartTime(LocalDateTime.of(2025, 4, 1, 10, 0));
         task1.setDuration(Duration.ofMinutes(60));
@@ -164,8 +164,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         Task task2 = new Task(2, "Задача 2", "Описание", Status.NEW);
         task2.setStartTime(LocalDateTime.of(2025, 4, 1, 11, 0));
         task2.setDuration(Duration.ofMinutes(60));
-
-        // assertFalse(manager.isOverlapping(task1, task2));
+        assertFalse(invokeIsOverlapping(manager, task1, task2));
     }
 
     @Test
