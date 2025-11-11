@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import static entities.Type.SUBTASK;
 
 public class SubTask extends Task {
-    private final int epicId; //id вместо епика
+    private final int epicId;
 
     public SubTask(String title, String description, Status status, Task epic) {
         super(title, description, status);
@@ -20,13 +20,21 @@ public class SubTask extends Task {
         this.epicId = epicId;
     }
 
+    public SubTask(String title, String description, Status status, Duration duration, LocalDateTime startTime, int epicId) {
+        super(title, description, status, duration, startTime);
+        this.epicId = epicId;
+    }
+
     public int getEpicId() {
         return epicId;
     }
 
     @Override
     public String toString() {
-        return "SubTask: " + super.toString();
+        return "SubTask{" +
+                super.toString() +
+                "epicId=" + epicId +
+                '}';
     }
 
     public String toString(SubTask subTask) {
@@ -36,8 +44,8 @@ public class SubTask extends Task {
                 this.getTitle(),
                 this.getStatus(),
                 this.getDescription(),
-                (this.getDuration() != null) ? this.getDuration().toMinutes() : 0,
-                (this.getStartTime() != null) ? this.getStartTime() : null,
+                this.getDuration().toMinutes(),
+                this.getStartTime(),
                 getEndTime(),
                 this.epicId);
     }

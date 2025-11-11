@@ -30,7 +30,6 @@ public class Epic extends Task {
 
     public Epic(int id, String title, String description, Status status) {
         super(id, title, description, status);
-
     }
 
     public List<Integer> getSubtaskIds() {
@@ -59,9 +58,9 @@ public class Epic extends Task {
                 ", title='" + this.getTitle() + '\'' +
                 ", description='" + this.getDescription() + '\'' +
                 ", status=" + this.getStatus() +
-                ", duration=" + this.getDuration() +
-                ", startTime=" + this.getStartTime() +
-                ", endTime=" + this.getEndTime() +
+                ", startTime=" + (this.getStartTime() != null ? this.getStartTime().toString() : "null") +
+                ", duration=" + (this.getDuration() != null ? this.getDuration().toString() : "null") +
+                ", endTime=" + (getEndTime() != null ? getEndTime().toString() : "null") +
                 '}';
     }
 
@@ -101,6 +100,6 @@ public class Epic extends Task {
 
         this.setStartTime(earliestStart);
         this.setDuration(totalDuration);
-        this.endTime = latestEnd;
+        this.setEndTime(latestEnd);
     }
 }
