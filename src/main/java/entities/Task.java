@@ -76,7 +76,7 @@ public class Task {
     }
 
     public LocalDateTime getStartTime() {
-        return startTime != null ? null : startTime;
+        return Objects.isNull(startTime) ? null : startTime;
     }
 
     public void setDuration(Duration duration) {

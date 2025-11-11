@@ -1,5 +1,6 @@
 package http.handlers;
 
+import entities.Status;
 import entities.Task;
 import http.HttpTaskServer;
 import managers.InMemoryTaskManager;
@@ -36,7 +37,7 @@ public class PrioritizedHandlerTest {
 
     @Test
     public void testGetPrioritizedTasksShouldReturn200() throws IOException, InterruptedException {
-        Task task = new Task("Task 1", "Desc", null,
+        Task task = new Task("Task 1", "Desc", Status.NEW,
                 java.time.Duration.ofMinutes(10), java.time.LocalDateTime.now());
         manager.createTask(task);
 
@@ -64,7 +65,7 @@ public class PrioritizedHandlerTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         assertEquals(200, response.statusCode(), "Ожидался статус 200");
-        assertTrue(response.body().contains("Task no time") || response.body().contains("[]"),
+        assertTrue(response.body().contains("[]"),
                 "Ответ может быть пустым, если нет задач с временем");
     }
 }
