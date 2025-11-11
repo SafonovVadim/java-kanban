@@ -29,7 +29,7 @@ public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
     }
 
     private void getHistory(HttpExchange exchange) throws IOException {
-        String json =createGson().toJson(taskManager.getHistory());
+        String json = createGson().toJson(taskManager.getHistory());
         sendText(exchange, json);
     }
 }
