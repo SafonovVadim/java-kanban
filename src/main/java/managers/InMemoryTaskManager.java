@@ -62,14 +62,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task updatedTask) {
         if (tasks.containsKey(updatedTask.getId())) {
-            if (hasIntersections(updatedTask)) {
-                throw new ManagerSaveException("Нельзя обновить задачу — она пересекается с другой.");
-            }
             tasks.put(updatedTask.getId(), updatedTask);
             prioritizedTasks.removeIf(t -> t.getId() == updatedTask.getId());
             prioritizedTasks.add(updatedTask);
         }
-
     }
 
     @Override
@@ -131,7 +127,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<SubTask> getAllSubtasks() {
-        return new ArrayList<>(subtasks.values());
+        return subtasks.values().stream().toList();
     }
 
     @Override
@@ -162,27 +158,27 @@ public class InMemoryTaskManager implements TaskManager {
         prioritizedTasks.add(copy);
         updateEpicStatus(copy.getEpicId());
         Epic epic = getEpicById(copy.getEpicId()).isPresent() ? getEpicById(copy.getEpicId()).get() : null;
-        if (Objects.nonNull(epic)) {
+        if (epic != null) {
             epic.addSubtaskId(copy);
             epic.updateFromSubtasks(getSubtasksByEpicId(epic.getId()));
         }
     }
 
     private void updateEpicStatus(int epicId) {
-        Optional<Epic> epic = getEpicById(epicId);
-        if (epic.isPresent()) {
-            updateStatus(epic.get());
+        Optional<Epic> epicOpt = getEpicById(epicId);
+        if (epicOpt.isPresent()) {
+            Epic epic = epicOpt.get();
+            updateStatus(epic);
             prioritizedTasks.removeIf(t -> t.getId() == epicId);
-            prioritizedTasks.add(epic.get());
+            if (epic.getStartTime() != null) {
+                prioritizedTasks.add(epic);
+            }
         }
     }
 
     @Override
     public void updateSubtask(SubTask updatedSubtask) {
         if (subtasks.containsKey(updatedSubtask.getId())) {
-            if (hasIntersections(updatedSubtask)) {
-                throw new ManagerSaveException("Нельзя обновить сабтаску — она пересекается с другой.");
-            }
             subtasks.put(updatedSubtask.getId(), updatedSubtask);
             updateEpicStatus(updatedSubtask.getEpicId());
             prioritizedTasks.removeIf(t -> t.getId() == updatedSubtask.getId());
@@ -306,6 +302,6 @@ public class InMemoryTaskManager implements TaskManager {
     private boolean hasIntersections(Task newTask) {
         List<Task> sortedTasks = getPrioritizedTasks();
         return sortedTasks.stream()
-                .anyMatch(task -> !task.equals(newTask) && isOverlapping(newTask, task));
+                .anyMatch(task -> isOverlapping(newTask, task));
     }
 }

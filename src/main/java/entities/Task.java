@@ -43,6 +43,14 @@ public class Task {
         this.startTime = startTime;
     }
 
+    public Task(String title, String description, Status status, Duration duration, LocalDateTime startTime) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
     public int getId() {
         return id;
     }
@@ -99,7 +107,7 @@ public class Task {
     public String toString() {
         return "Task{" +
                 " id=" + this.id +
-                " title=" + title +
+                ", title=" + title +
                 ", description=" + description +
                 ", status=" + status +
                 ", duration=" + duration +
