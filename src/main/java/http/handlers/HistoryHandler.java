@@ -1,14 +1,13 @@
 package http.handlers;
 
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import entities.Endpoint;
 import http.BaseHttpHandler;
 import managers.InMemoryTaskManager;
 
 import java.io.IOException;
 
-public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
+public class HistoryHandler extends BaseHttpHandler {
     private final InMemoryTaskManager taskManager;
 
     public HistoryHandler(InMemoryTaskManager taskManager) {
@@ -29,7 +28,7 @@ public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
     }
 
     private void getHistory(HttpExchange exchange) throws IOException {
-        String json = createGson().toJson(taskManager.getHistory());
+        String json = gson.toJson(taskManager.getHistory());
         sendText(exchange, json);
     }
 }

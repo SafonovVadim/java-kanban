@@ -19,14 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PrioritizedHandlerTest {
     InMemoryTaskManager manager = new InMemoryTaskManager();
-    HttpTaskServer server = new HttpTaskServer(manager);
+    HttpTaskServer server;
     HttpClient client = HttpClient.newHttpClient();
-
-    public PrioritizedHandlerTest() throws IOException {
-    }
 
     @BeforeEach
     public void setUp() throws IOException {
+        server = new HttpTaskServer(manager);
         server.start();
     }
 

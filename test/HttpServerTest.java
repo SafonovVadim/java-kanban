@@ -25,18 +25,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class HttpServerTest {
     InMemoryTaskManager manager = new InMemoryTaskManager();
-    HttpTaskServer taskServer = new HttpTaskServer(manager);
+    HttpTaskServer taskServer;
     Gson gson = new GsonBuilder()
             .registerTypeAdapter(Duration.class, new DurationAdapter())
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
     HttpClient client = HttpClient.newHttpClient();
 
-    public HttpServerTest() throws IOException {
-    }
-
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws IOException {
+        taskServer = new HttpTaskServer(manager);
         taskServer.start();
     }
 

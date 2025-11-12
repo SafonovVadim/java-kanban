@@ -3,12 +3,11 @@ package http;
 import com.sun.net.httpserver.HttpServer;
 import http.handlers.*;
 import managers.InMemoryTaskManager;
-import managers.Managers;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
-public class HttpTaskServer extends Managers {
+public class HttpTaskServer {
     private static final int PORT = 8080;
     private static InMemoryTaskManager taskManager;
     private static HttpServer httpServer;

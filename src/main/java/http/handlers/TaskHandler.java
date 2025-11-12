@@ -1,8 +1,6 @@
 package http.handlers;
 
-import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import entities.Endpoint;
 import entities.Task;
 import exceptions.ManagerSaveException;
@@ -13,7 +11,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-public class TaskHandler extends BaseHttpHandler implements HttpHandler {
+public class TaskHandler extends BaseHttpHandler {
     private final InMemoryTaskManager taskManager;
 
     public TaskHandler(InMemoryTaskManager taskManager) {
@@ -43,7 +41,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
     }
 
     private void getAllTasks(HttpExchange exchange) throws IOException {
-        String json = createGson().toJson(taskManager.getAllTasks());
+        String json = gson.toJson(taskManager.getAllTasks());
         sendText(exchange, json);
     }
 
@@ -55,7 +53,6 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                 return;
             }
 
-            Gson gson = createGson();
             Task task = null;
             try {
                 task = gson.fromJson(body, Task.class);
@@ -81,7 +78,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
         int id = getId(exchange);
         Optional<Task> task = taskManager.getTaskById(id);
         if (task.isPresent()) {
-            sendText(exchange, createGson().toJson(task.get()));
+            sendText(exchange, gson.toJson(task.get()));
         } else {
             sendNotFound(exchange);
         }
@@ -92,7 +89,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
         Optional<Task> task = taskManager.getTaskById(id);
         if (task.isPresent()) {
             taskManager.deleteTask(id);
-            sendText(exchange, createGson().toJson(task.get()));
+            sendText(exchange, gson.toJson(task.get()));
         } else {
             sendNotFound(exchange);
         }

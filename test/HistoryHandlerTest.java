@@ -18,15 +18,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HistoryHandlerTest {
     InMemoryTaskManager manager = new InMemoryTaskManager();
-    HttpTaskServer server = new HttpTaskServer(manager);
+    HttpTaskServer server;
 
     HttpClient client = HttpClient.newHttpClient();
 
-    public HistoryHandlerTest() throws IOException {
-    }
-
     @BeforeEach
-    public void setUp() throws InterruptedException {
+    public void setUp() throws IOException {
+        server = new HttpTaskServer(manager);
         server.start();
     }
 

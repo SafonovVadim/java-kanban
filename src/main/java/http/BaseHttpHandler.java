@@ -3,6 +3,7 @@ package http;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import entities.Endpoint;
 import http.adapters.DurationAdapter;
 import http.adapters.LocalDateTimeAdapter;
@@ -12,7 +13,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class BaseHttpHandler {
+public abstract class BaseHttpHandler implements HttpHandler {
+    public static final Gson gson = createGson();
 
     protected void sendText(HttpExchange exchange, String message) throws IOException {
         byte[] resp = message.getBytes(StandardCharsets.UTF_8);

@@ -1,8 +1,6 @@
 package http.handlers;
 
-import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import entities.Endpoint;
 import entities.Epic;
 import exceptions.ManagerSaveException;
@@ -13,7 +11,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-public class EpicHandler extends BaseHttpHandler implements HttpHandler {
+public class EpicHandler extends BaseHttpHandler {
     private final InMemoryTaskManager taskManager;
 
     public EpicHandler(InMemoryTaskManager taskManager) {
@@ -46,7 +44,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
     }
 
     private void getAllEpics(HttpExchange exchange) throws IOException {
-        String json = createGson().toJson(taskManager.getAllEpics());
+        String json = gson.toJson(taskManager.getAllEpics());
         sendText(exchange, json);
     }
 
@@ -58,7 +56,6 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
                 return;
             }
 
-            Gson gson = createGson();
             Epic task = gson.fromJson(body, Epic.class);
 
             if (task == null) {
@@ -80,7 +77,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
         int id = getId(exchange);
         Optional<Epic> task = taskManager.getEpicById(id);
         if (task.isPresent()) {
-            sendText(exchange, createGson().toJson(task.get()));
+            sendText(exchange, gson.toJson(task.get()));
         } else {
             sendNotFound(exchange);
         }
@@ -91,7 +88,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
         Optional<Epic> task = taskManager.getEpicById(id);
         if (task.isPresent()) {
             taskManager.deleteEpic(id);
-            sendText(exchange, createGson().toJson(task.get()));
+            sendText(exchange, gson.toJson(task.get()));
         } else {
             sendNotFound(exchange);
         }
@@ -102,7 +99,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
         Optional<Epic> task = taskManager.getEpicById(id);
         if (task.isPresent()) {
             taskManager.getSubtasksByEpicId(id);
-            sendText(exchange, createGson().toJson(task.get()));
+            sendText(exchange, gson.toJson(task.get()));
         } else {
             sendNotFound(exchange);
         }
